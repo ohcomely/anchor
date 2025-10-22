@@ -5,6 +5,7 @@ A C++ library providing bitwise-reproducible parallel linear algebra operations.
 ## The Problem
 
 Standard parallel reductions are non-deterministic:
+
 ```cpp
 // Different thread counts → different results
 #pragma omp parallel for reduction(+:sum)
@@ -15,6 +16,7 @@ for (i...) sum += array[i];
 ## The Solution
 
 Anchor guarantees identical results across all thread counts and runs:
+
 ```cpp
 #include "anchor_linalg.h"
 
@@ -56,23 +58,3 @@ double d = anchor::reproducible_dot(x, y, n, anchor::Algorithm::FIXED_TREE);
 // Reproducible L2 norm
 double norm = anchor::reproducible_norm2(x, n, anchor::Algorithm::FIXED_TREE);
 ```
-
-## How It Works
-
-**Algorithm A: Fixed Binary Tree Reduction**
-1. Partition input into fixed-size chunks (1024 elements)
-2. Parallel: each thread reduces assigned chunks sequentially
-3. Sequential: combine partial results in deterministic binary tree
-
-This ensures identical operation order regardless of thread scheduling.
-
-## Status
-
-- ✓ Algorithm A (Fixed Tree) implemented and tested
-- ⏳ Algorithm B (Compensated Summation) - planned
-- ⏳ Algorithm C (Exact Accumulation) - planned
-- ⏳ Algorithm D (Two-Level Hierarchical) - planned
-
-## Research
-
-This library implements algorithms from reproducible computing research. See `document.txt` for full theoretical background and experimental design.
